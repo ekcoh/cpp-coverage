@@ -1,0 +1,19 @@
+[2020-02-23 23:14:05] [info] Load coverage file: C:\Users\Hocke\CMakeBuilds\24c21225-fbf9-8535-bf7c-263c5449defe\build\x64-Debug\examples\02_multiple_targets\cpp_coverage_example_02_multiple_targets_test1.cov
+[2020-02-23 23:14:05] [info] Load coverage file: C:\Users\Hocke\CMakeBuilds\24c21225-fbf9-8535-bf7c-263c5449defe\build\x64-Debug\examples\02_multiple_targets\cpp_coverage_example_02_multiple_targets_test2.cov
+[2020-02-23 23:14:05] [info] Start Program:
+Modules: Selected: * Excluded: 
+Sources: Selected: * Excluded: 
+Log Level: Verbose
+Cover Children: 0
+Aggregate by file: 1
+Continue after C++ exception: 1
+Optimized build support: 0
+Export: Html C:/Users/Hocke/CMakeBuilds/24c21225-fbf9-8535-bf7c-263c5449defe/build/x64-Debug/examples/02_multiple_targets/coverage 
+Input coverage: C:\Users\Hocke\CMakeBuilds\24c21225-fbf9-8535-bf7c-263c5449defe\build\x64-Debug\examples\02_multiple_targets\cpp_coverage_example_02_multiple_targets_test1.cov C:\Users\Hocke\CMakeBuilds\24c21225-fbf9-8535-bf7c-263c5449defe\build\x64-Debug\examples\02_multiple_targets\cpp_coverage_example_02_multiple_targets_test2.cov 
+Unified diff: 
+Excluded line regular expressions: 
+Substitute pdb source paths: 
+
+[2020-02-23 23:14:05] [info] ----------------------------------------------------
+[2020-02-23 23:14:05] [info] Coverage generated in Folder C:/Users/Hocke/CMakeBuilds/24c21225-fbf9-8535-bf7c-263c5449defe/build/x64-Debug/examples/02_multiple_targets/coverage
+[2020-02-23 23:14:05] [info] ----------------------------------------------------

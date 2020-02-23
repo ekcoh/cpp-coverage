@@ -1,0 +1,29 @@
+#ifndef CPP_COVERAGE_EXAMPLE_QSORTLIB_HPP
+#define CPP_COVERAGE_EXAMPLE_QSORTLIB_HPP
+
+#ifdef _WIN32
+#define CPP_COVERAGE_EXAMPLE_CALL __cdecl
+#ifdef CPP_COVERAGE_EXAMPLE_STATIC_LIB
+#define CPP_COVERAGE_EXAMPLE_API
+#else
+#ifdef CPP_COVERAGE_EXAMPLE_EXPORTING
+#define CPP_COVERAGE_EXAMPLE_API __declspec( dllexport )
+#else
+#define CPP_COVERAGE_EXAMPLE_API __declspec( dllimport )
+#endif /* CPP_COVERAGE_EXAMPLE_EXPORTING */
+#endif /* CPP_COVERAGE_EXAMPLE_STATIC_LIB */
+#elif __GNUC__ >= 4
+#define CPP_COVERAGE_EXAMPLE_API __attribute__((visibility("default")))
+#define CPP_COVERAGE_EXAMPLE_CALL
+#else
+#define CPP_COVERAGE_EXAMPLE_API
+#define CPP_COVERAGE_EXAMPLE_CALL
+#endif /* _WIN32 */
+
+CPP_COVERAGE_EXAMPLE_API  void 
+CPP_COVERAGE_EXAMPLE_CALL quicksort(int* arr, int low, int high);
+
+CPP_COVERAGE_EXAMPLE_API  void
+CPP_COVERAGE_EXAMPLE_CALL bubblesort(int* arr, int low, int high);
+
+#endif // CPP_COVERAGE_EXAMPLE_QSORTLIB_HPP

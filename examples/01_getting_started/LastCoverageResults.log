@@ -1,0 +1,18 @@
+[2020-02-23 18:10:03] [info] Load coverage file: C:\Users\Hocke\CMakeBuilds\24c21225-fbf9-8535-bf7c-263c5449defe\build\x64-Debug\examples\01_getting_started\cpp_coverage_example_01_getting_started_test.cov
+[2020-02-23 18:10:03] [info] Start Program:
+Modules: Selected: * Excluded: 
+Sources: Selected: * Excluded: 
+Log Level: Verbose
+Cover Children: 0
+Aggregate by file: 1
+Continue after C++ exception: 1
+Optimized build support: 0
+Export: Html C:/Users/Hocke/CMakeBuilds/24c21225-fbf9-8535-bf7c-263c5449defe/build/x64-Debug/examples/01_getting_started/coverage 
+Input coverage: C:\Users\Hocke\CMakeBuilds\24c21225-fbf9-8535-bf7c-263c5449defe\build\x64-Debug\examples\01_getting_started\cpp_coverage_example_01_getting_started_test.cov 
+Unified diff: 
+Excluded line regular expressions: 
+Substitute pdb source paths: 
+
+[2020-02-23 18:10:03] [info] ----------------------------------------------------
+[2020-02-23 18:10:03] [info] Coverage generated in Folder C:/Users/Hocke/CMakeBuilds/24c21225-fbf9-8535-bf7c-263c5449defe/build/x64-Debug/examples/01_getting_started/coverage
+[2020-02-23 18:10:03] [info] ----------------------------------------------------
