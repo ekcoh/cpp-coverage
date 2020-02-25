@@ -40,7 +40,7 @@ add_test_coverage(
         "${CMAKE_CURRENT_SOURCE_DIR}/src" 
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
     CONTINUE_AFTER_CPP_EXCEPTION
-    VERBOSE
+    QUIET
 )
 
 # Add coverage for second test binary
@@ -51,5 +51,5 @@ add_test_coverage(
         "${CMAKE_CURRENT_SOURCE_DIR}/src" 
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
     CONTINUE_AFTER_CPP_EXCEPTION
-    VERBOSE
+    QUIET
 )
