@@ -34,3 +34,6 @@
 # Visual studio
 .vs
 out/
+
+# OpenCppCoverage
+# LastCoverageResults.log

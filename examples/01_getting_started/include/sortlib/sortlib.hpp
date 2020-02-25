@@ -26,4 +26,7 @@ CPP_COVERAGE_EXAMPLE_CALL quicksort(int* arr, int low, int high);
 CPP_COVERAGE_EXAMPLE_API  void
 CPP_COVERAGE_EXAMPLE_CALL bubblesort(int* arr, int low, int high);
 
+CPP_COVERAGE_EXAMPLE_API  void
+CPP_COVERAGE_EXAMPLE_CALL uncovered();
+
 #endif // CPP_COVERAGE_EXAMPLE_QSORTLIB_HPP

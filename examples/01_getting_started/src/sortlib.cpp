@@ -42,6 +42,7 @@ void CPP_COVERAGE_EXAMPLE_CALL quicksort(int* arr, int low, int high)
 
 void CPP_COVERAGE_EXAMPLE_CALL bubblesort(int* arr, int low, int high)
 {
+    // Not tested in module-reated test, but covered from 02_multiple_targets
     if (low < high)
     {
         for (auto i = low; i <= high - 1; ++i)
@@ -53,4 +54,9 @@ void CPP_COVERAGE_EXAMPLE_CALL bubblesort(int* arr, int low, int high)
             }
         }
     }
+}
+
+void CPP_COVERAGE_EXAMPLE_CALL uncovered()
+{
+    std::cout << "This function is never called from any test\n";
 }
