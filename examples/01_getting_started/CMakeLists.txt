@@ -21,7 +21,8 @@ add_test_coverage(
         "${CMAKE_CURRENT_SOURCE_DIR}/src" 
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
     CONTINUE_AFTER_CPP_EXCEPTION
-    QUIET
+    REPORT_FOR_PROJECT
+    REPORT_FOR_TARGET
 )
 
 # Consider detecting source targets via dependencies?! But this will fail to test that includes sources directly.... if not comparing...
