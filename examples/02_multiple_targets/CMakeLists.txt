@@ -33,7 +33,7 @@ add_definitions(-DCPP_COVERAGE_EXAMPLE_STATIC_LIB)
 add_test(NAME cpp_coverage_example_02_multiple_targets_test2 COMMAND cpp_coverage_example_02_multiple_targets_test2 )
 
 # Add coverage for first test binary
-add_test_coverage(
+cpp_coverage_add_test_coverage(
     TEST_TARGET
         cpp_coverage_example_02_multiple_targets_test1 
     SOURCES
@@ -45,7 +45,7 @@ add_test_coverage(
 )
 
 # Add coverage for second test binary
-add_test_coverage(
+cpp_coverage_add_test_coverage(
     TEST_TARGET
          cpp_coverage_example_02_multiple_targets_test2 
     SOURCES

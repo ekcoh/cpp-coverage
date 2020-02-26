@@ -1,12 +1,16 @@
-cmake_minimum_required (VERSION 3.11)
+# Copyright(C) 2019 - 2020 Håkan Sidenvall <ekcoh.git@gmail.com>.
+#
+# This file is subject to the license terms in the LICENSE file found in the 
+# root directory of this distribution.
+#
+# See https://github.com/ekcoh/cpp-coverage for updates, documentation, and revision 
+# history.
 
-# Include CMake utilities -----------------------------------------------------
-#include(cmake/compile_options.cmake)
+cmake_minimum_required (VERSION 3.11)
 
 include(cmake/cpp_coverage.cmake)
 
 project(cpp_coverage)
-
 option(CPP_COVERAGE_BUILD_EXAMPLES "If enabled, builds examples" ON)
 option(CPP_COVERAGE_ENABLE_COBERTURA "If enabled, downloads Covertura (if not already available as fetched content) and enables cobertura export format" ON)
 
