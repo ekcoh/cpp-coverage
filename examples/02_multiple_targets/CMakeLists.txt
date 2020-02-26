@@ -34,7 +34,7 @@ add_test(NAME cpp_coverage_example_02_multiple_targets_test2 COMMAND cpp_coverag
 
 # Add coverage for first test binary
 cpp_coverage_add_test_coverage(
-    TEST_TARGET
+    TARGET
         cpp_coverage_example_02_multiple_targets_test1 
     SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/src" 
@@ -46,7 +46,7 @@ cpp_coverage_add_test_coverage(
 
 # Add coverage for second test binary
 cpp_coverage_add_test_coverage(
-    TEST_TARGET
+    TARGET
          cpp_coverage_example_02_multiple_targets_test2 
     SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/src" 

@@ -12,18 +12,47 @@
 # coverage measurements.
 #
 # cpp_coverage_add_code_coverage(
-#   TEST_TARGET <test_target>
-#   [ SOURCES <sources...> ]
-#   [ MODULES <modules...> ]
+#   TARGET <test_target>
+#   [ REPORT_FOR_PROJECT ]
+#   [ REPORT_FOR_TARGET ]
 #   [ DEPENDENCIES <dependencies...> ]
+#
+#   [ SOURCES <source-file-patterns...> ]
+#   [ MODULES <module-file-patterns...> ]
+#   [ EXCLUDED_SOURCES <source-file-patterns...> ]
+#   [ EXCLUDED_MODULES <module-file-patterns...> ]
+#   [ COVER_CHILDREN ]
 #   [ CONTINUE_AFTER_CPP_EXCEPTION ]
 #   [ VERBOSE | QUIET ]
 # )
 #
-# BINARY_OUTPUT_FILE <file>
-#   Optionally define an explicit coverage binary export file for the test 
-#   target. This must be a unique file within the CMake project build. 
-#   Defaults to '${CMAKE_CURRENT_BINARY_DIR}/${TEST_TARGET}.cov'.
+# REPORT_FOR_PROJECT
+#   Specifies that the coverage measured for the given <test_target> should be
+#   aggregated to the custom target created for aggregating coverage for the whole
+#   project. This target will be named ${CMAKE_PROJECT_NAME}_coverage_report.
+# REPORT_FOR_TARGET
+#   Optionally create a custom target named <test_target>_coverage_report that will
+#   generate an individual report for the given targets coverage.
+# DEPENDENCIES>
+#   Optionally define custom target dependencies that may affect the coverage report.
+#   These dependencies will be setup as dependencies of the custom command used
+#   to produce the coverage binary data.
+# SOURCES
+#   See https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/Command-line-reference
+# MODULES
+#   See https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/Command-line-reference
+# EXCLUDED_SOURCES
+#   See https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/Command-line-reference
+# EXCLUDED_MODULES
+#   See https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/Command-line-reference
+# COVER_CHILDREN
+#   See https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/Command-line-reference
+# CONTINUE_AFTER_CPP_EXCEPTION
+#   See https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/Command-line-reference
+# VERBOSE
+#   See https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/Command-line-reference
+# QUIET
+#   See https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/Command-line-reference
 #
 function(cpp_coverage_add_test_coverage)
     # Custom options as well as supporting OpenCppCoverage CLI options, see:
@@ -31,7 +60,7 @@ function(cpp_coverage_add_test_coverage)
     cmake_parse_arguments(
 		CPP_COVERAGE
 		"REPORT_FOR_TARGET;REPORT_FOR_PROJECT;CONTINUE_AFTER_CPP_EXCEPTION;COVER_CHILDREN;VERBOSE;QUIET"
-		"TEST_TARGET;EXCLUDED_LINE_REGEX" 
+		"TARGET;EXCLUDED_LINE_REGEX" 
 		"SOURCES;MODULES;EXCLUDED_SOURCES;EXCLUDED_MODULES;DEPENDENCIES"
 		${ARGN}
 	)
@@ -59,9 +88,9 @@ function(cpp_coverage_add_test_coverage)
         list(APPEND OPENCPPCOVERAGE_CLI_ARGS "--quiet")
     endif()
 
-    set(CPP_COVERAGE_BINARY_OUTPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/${CPP_COVERAGE_TEST_TARGET}.cov")
+    set(CPP_COVERAGE_BINARY_OUTPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/${CPP_COVERAGE_TARGET}.cov")
     file(TO_NATIVE_PATH ${CPP_COVERAGE_BINARY_OUTPUT_FILE} CPP_COVERAGE_NATIVE_BINARY_OUTPUT_FILE)
-    set(CPP_COVERAGE_CONFIG_INPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/${CPP_COVERAGE_TEST_TARGET}.cov.txt")
+    set(CPP_COVERAGE_CONFIG_INPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/${CPP_COVERAGE_TARGET}.cov.txt")
     file(TO_NATIVE_PATH ${CPP_COVERAGE_CONFIG_INPUT_FILE} CPP_COVERAGE_CONFIG_INPUT_FILE)
 	
     # Create native path arguments for OpenCppCoverage
@@ -98,19 +127,19 @@ function(cpp_coverage_add_test_coverage)
 	)
 
     # Setup coverage report target for individual test target
-    get_target_property(TEST_TARGET_BINARY_DIR ${CPP_COVERAGE_TEST_TARGET} BINARY_DIR)
+    get_target_property(TARGET_BINARY_DIR ${CPP_COVERAGE_TARGET} BINARY_DIR)
 
     # Add custom command to generate coverage file
     add_custom_command(
 		OUTPUT ${CPP_COVERAGE_BINARY_OUTPUT_FILE}
         COMMENT
-            "Running OpenCppCoverage on test target ${CPP_COVERAGE_TEST_TARGET} to collect test coverage..."
+            "Running OpenCppCoverage on test target ${CPP_COVERAGE_TARGET} to collect test coverage..."
 		COMMAND OpenCppCoverage 
 			${OPENCPPCOVERAGE_CLI_ARGS} 
             --config_file=${CPP_COVERAGE_CONFIG_INPUT_FILE} 
-			-- $<TARGET_FILE:${CPP_COVERAGE_TEST_TARGET}>
+			-- $<TARGET_FILE:${CPP_COVERAGE_TARGET}>
 		DEPENDS
-			${CPP_COVERAGE_TEST_TARGET}
+			${CPP_COVERAGE_TARGET}
             ${CPP_COVERAGE_DEPENDENCIES}
 		WORKING_DIRECTORY 
             ${CMAKE_CURRENT_BINARY_DIR}
@@ -118,15 +147,15 @@ function(cpp_coverage_add_test_coverage)
 	)
 
     # Add target that generates coverage data
-    add_custom_target(${CPP_COVERAGE_TEST_TARGET}_coverage
+    add_custom_target(${CPP_COVERAGE_TARGET}_coverage
         DEPENDS ${CPP_COVERAGE_BINARY_OUTPUT_FILE})
 
     # Test-target report handling
     if (CPP_COVERAGE_REPORT_FOR_TARGET)
-        set(TEST_COVERAGE_REPORT_TARGET ${CPP_COVERAGE_TEST_TARGET}_coverage_report)
+        set(TEST_COVERAGE_REPORT_TARGET ${CPP_COVERAGE_TARGET}_coverage_report)
         cpp_coverage_add_coverage_report_target(
-            "${CPP_COVERAGE_TEST_TARGET}" 
-            "${TEST_TARGET_BINARY_DIR}" 
+            "${CPP_COVERAGE_TARGET}" 
+            "${TARGET_BINARY_DIR}" 
             "${CPP_COVERAGE_BINARY_OUTPUT_FILE}" 
             "${TEST_COVERAGE_REPORT_TARGET}"
             "${OPENCPPCOVERAGE_CLI_ARGS}"
@@ -155,7 +184,7 @@ function(cpp_coverage_add_test_coverage)
 	    )
 
         # Make project report target depend on target generating coverage
-        add_dependencies(${PROJECT_COVERAGE_REPORT_TARGET} ${CPP_COVERAGE_TEST_TARGET}_coverage)
+        add_dependencies(${PROJECT_COVERAGE_REPORT_TARGET} ${CPP_COVERAGE_TARGET}_coverage)
     endif()
 endfunction()
 

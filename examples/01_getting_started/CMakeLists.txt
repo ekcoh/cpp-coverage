@@ -15,7 +15,7 @@ add_test(NAME cpp_coverage_example_01_getting_started_test COMMAND cpp_coverage_
 
 # Enable coverage
 cpp_coverage_add_test_coverage(
-    TEST_TARGET
+    TARGET
         cpp_coverage_example_01_getting_started_test 
     SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/src" 
