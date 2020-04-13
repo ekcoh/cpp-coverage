@@ -45,8 +45,14 @@ add_test_coverage(
 ...
 ```
 
+## Usage with test frameworks
+
+TODO: Provide example using Google test
+
 For complete examples, see /examples folder. Examples are not built by default and requires CPP_COVERAGE_BUILD_EXAMPLES to be set to ON.
 
 See [OpenCppCoverage documentation](https://github.com/OpenCppCoverage/OpenCppCoverage/wiki) 
 for details on how to use and integrate in CI etc.
+
+# Consider renaming to "cmake-open-cpp-coverage"
 

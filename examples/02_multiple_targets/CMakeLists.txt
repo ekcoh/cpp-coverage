@@ -16,7 +16,7 @@ target_link_libraries(cpp_coverage_example_02_multiple_targets_test1
     PRIVATE cpp_coverage_extended_sortlib
 )
 add_definitions(-DCPP_COVERAGE_EXAMPLE_STATIC_LIB)
-add_test(NAME cpp_coverage_example_02_multiple_targets_test1 COMMAND cpp_coverage_example_02_multiple_targets_test1 )
+#add_test(NAME cpp_coverage_example_02_multiple_targets_test1 COMMAND cpp_coverage_example_02_multiple_targets_test1 )
 
 # Second test binary (For the sake of example we are adding two separate test binaries covering different parts...)
 add_executable(cpp_coverage_example_02_multiple_targets_test2 
@@ -30,7 +30,7 @@ target_link_libraries(cpp_coverage_example_02_multiple_targets_test2
     PRIVATE cpp_coverage_extended_sortlib
 )
 add_definitions(-DCPP_COVERAGE_EXAMPLE_STATIC_LIB)
-add_test(NAME cpp_coverage_example_02_multiple_targets_test2 COMMAND cpp_coverage_example_02_multiple_targets_test2 )
+#add_test(NAME cpp_coverage_example_02_multiple_targets_test2 COMMAND cpp_coverage_example_02_multiple_targets_test2 )
 
 # Add coverage for first test binary
 cpp_coverage_add_test_coverage(

@@ -6,10 +6,14 @@
 # See https://github.com/ekcoh/cpp-coverage for updates, documentation, and revision 
 # history.
 
+function(cpp_coverage_add_test_with_coverage)
+endfunction()
+
 # cpp_coverage_add_code_coverage
 #
 # Adds code coverage target(s) for a given test target using OpenCppCoverage for
-# coverage measurements.
+# coverage measurements. This is a substitute for regular CMake add_test(...).
+# Hence it has the same pros and cons as running tests via CMake add_test(...).
 #
 # cpp_coverage_add_code_coverage(
 #   TARGET <test_target>
@@ -55,13 +59,11 @@
 #   See https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/Command-line-reference
 #
 function(cpp_coverage_add_test_coverage)
-    # Custom options as well as supporting OpenCppCoverage CLI options, see:
-    # https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/Command-line-reference
     cmake_parse_arguments(
 		CPP_COVERAGE
 		"REPORT_FOR_TARGET;REPORT_FOR_PROJECT;CONTINUE_AFTER_CPP_EXCEPTION;COVER_CHILDREN;VERBOSE;QUIET"
 		"TARGET;EXCLUDED_LINE_REGEX" 
-		"SOURCES;MODULES;EXCLUDED_SOURCES;EXCLUDED_MODULES;DEPENDENCIES"
+		"SOURCES;MODULES;EXCLUDED_SOURCES;EXCLUDED_MODULES;DEPENDENCIES;TARGET_ARGS"
 		${ARGN}
 	)
 
@@ -92,23 +94,28 @@ function(cpp_coverage_add_test_coverage)
     file(TO_NATIVE_PATH ${CPP_COVERAGE_BINARY_OUTPUT_FILE} CPP_COVERAGE_NATIVE_BINARY_OUTPUT_FILE)
     set(CPP_COVERAGE_CONFIG_INPUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/${CPP_COVERAGE_TARGET}.cov.txt")
     file(TO_NATIVE_PATH ${CPP_COVERAGE_CONFIG_INPUT_FILE} CPP_COVERAGE_CONFIG_INPUT_FILE)
+
+    # Setup coverage report target for individual test target
+    get_target_property(TARGET_BINARY_DIR ${CPP_COVERAGE_TARGET} BINARY_DIR)
+    file(TO_NATIVE_PATH ${TARGET_BINARY_DIR} TARGET_BINARY_DIR)
 	
     # Create native path arguments for OpenCppCoverage
+    string(APPEND OPENCPPCOVERAGE_COVERAGE_ARGS_MULTILINE)
     foreach (CPP_COVERAGE_MODULE ${CPP_COVERAGE_MODULES})
         file(TO_NATIVE_PATH ${CPP_COVERAGE_MODULE} CPP_COVERAGE_MODULE)
-        string(APPEND OPENCPPCOVERAGE_MODULE_ARGS "modules=${CPP_COVERAGE_MODULE}\n")
+        string(APPEND OPENCPPCOVERAGE_COVERAGE_ARGS_MULTILINE "modules=${CPP_COVERAGE_MODULE}\n")
     endforeach()
     foreach (CPP_COVERAGE_EXCLUDED_MODULE ${CPP_COVERAGE_EXCLUDED_MODULES})
         file(TO_NATIVE_PATH ${CPP_COVERAGE_EXCLUDED_MODULE} CPP_COVERAGE_EXCLUDED_MODULE)
-        string(APPEND OPENCPPCOVERAGE_EXCLUDED_MODULE_ARGS "excluded_modules=${CPP_COVERAGE_EXCLUDED_MODULE}\n")
+        string(APPEND OPENCPPCOVERAGE_COVERAGE_ARGS_MULTILINE "excluded_modules=${CPP_COVERAGE_EXCLUDED_MODULE}\n")
     endforeach()
     foreach (CPP_COVERAGE_SOURCE_FILE ${CPP_COVERAGE_SOURCES})
         file(TO_NATIVE_PATH ${CPP_COVERAGE_SOURCE_FILE} SOURCE_NATIVE_PATH)
-        string(APPEND OPENCPPCOVERAGE_SOURCE_ARGS "sources=${SOURCE_NATIVE_PATH}\n")
+        string(APPEND OPENCPPCOVERAGE_COVERAGE_ARGS_MULTILINE "sources=${SOURCE_NATIVE_PATH}\n")
     endforeach()
     foreach (CPP_COVERAGE_EXCLUDED_SOURCE ${CPP_COVERAGE_EXCLUDED_SOURCES})
         file(TO_NATIVE_PATH ${CPP_COVERAGE_EXCLUDED_SOURCE} CPP_COVERAGE_EXCLUDED_SOURCE)
-        string(APPEND OPENCPPCOVERAGE_EXCLUDED_SOURCE_ARGS "excluded_sources=${CPP_COVERAGE_EXCLUDED_SOURCE}\n")
+        string(APPEND OPENCPPCOVERAGE_COVERAGE_ARGS_MULTILINE "excluded_sources=${CPP_COVERAGE_EXCLUDED_SOURCE}\n")
     endforeach()
 
     foreach(COVERAGE_ARG IN LISTS OPENCPPCOVERAGE_COVERAGE_ARGS)
@@ -119,15 +126,9 @@ function(cpp_coverage_add_test_coverage)
 	file(WRITE ${CPP_COVERAGE_CONFIG_INPUT_FILE} 
 		"# Auto-generated config file for OpenCppCoverage to produce coverage output\n"
 		"export_type=binary:${CPP_COVERAGE_NATIVE_BINARY_OUTPUT_FILE}\n"
+        "export_type=html:${TARGET_BINARY_DIR}/${CPP_COVERAGE_TARGET}_coverage\n"
         "${OPENCPPCOVERAGE_COVERAGE_ARGS_MULTILINE}"
-        "${OPENCPPCOVERAGE_MODULE_ARGS}"
-        "${OPENCPPCOVERAGE_EXCLUDED_MODULE_ARGS}"
-        "${OPENCPPCOVERAGE_SOURCE_ARGS}" 
-        "${OPENCPPCOVERAGE_EXCLUDED_SOURCE_ARGS}"
 	)
-
-    # Setup coverage report target for individual test target
-    get_target_property(TARGET_BINARY_DIR ${CPP_COVERAGE_TARGET} BINARY_DIR)
 
     # Add custom command to generate coverage file
     add_custom_command(
@@ -137,7 +138,7 @@ function(cpp_coverage_add_test_coverage)
 		COMMAND OpenCppCoverage 
 			${OPENCPPCOVERAGE_CLI_ARGS} 
             --config_file=${CPP_COVERAGE_CONFIG_INPUT_FILE} 
-			-- $<TARGET_FILE:${CPP_COVERAGE_TARGET}>
+			-- $<TARGET_FILE:${CPP_COVERAGE_TARGET}> ${CPP_COVERAGE_TARGET_ARGS}
 		DEPENDS
 			${CPP_COVERAGE_TARGET}
             ${CPP_COVERAGE_DEPENDENCIES}
@@ -146,12 +147,23 @@ function(cpp_coverage_add_test_coverage)
 		VERBATIM
 	)
 
+    # Simply wrap test command within OpenCppCoverage
+    # TODO Consider to piggy-back report generation to this?!
+    add_test(
+        NAME 
+            ${CPP_COVERAGE_TARGET} 
+        COMMAND OpenCppCoverage 
+			${OPENCPPCOVERAGE_CLI_ARGS} 
+            --config_file=${CPP_COVERAGE_CONFIG_INPUT_FILE} 
+			-- $<TARGET_FILE:${CPP_COVERAGE_TARGET}>
+    )
+
     # Add target that generates coverage data
     add_custom_target(${CPP_COVERAGE_TARGET}_coverage
         DEPENDS ${CPP_COVERAGE_BINARY_OUTPUT_FILE})
 
     # Test-target report handling
-    if (CPP_COVERAGE_REPORT_FOR_TARGET)
+    if (CPP_COVERAGE_ENABLE_PER_TARGET_COVERAGE_REPORTS AND CPP_COVERAGE_REPORT_FOR_TARGET)
         set(TEST_COVERAGE_REPORT_TARGET ${CPP_COVERAGE_TARGET}_coverage_report)
         cpp_coverage_add_coverage_report_target(
             "${CPP_COVERAGE_TARGET}" 
@@ -219,6 +231,7 @@ function(cpp_coverage_add_coverage_report_target
         COMMAND OpenCppCoverage 
             ${OPENCPPCOVERAGE_CLI_ARGS}
 	        --config_file ${REPORT_CONFIG_FILE}
+        COMMAND ${CPP_COVERAGE_REPORT_GENERATOR_TOOL} -reports:${REPORT_COBERTURA_FILE} -reporttypes:Html;HtmlChart;Badges -targetdir:${TARGET_BINARY_DIR}/custom_report -historydir:${TARGET_BINARY_DIR}/history
 	    DEPENDS 
             ${REPORT_CONFIG_FILE} 
             ${CPP_COVERAGE_BINARY_OUTPUT_FILE}
