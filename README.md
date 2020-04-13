@@ -15,3 +15,6 @@ For complete examples, see /examples folder. Examples are not built by default a
 
 See [OpenCppCoverage documentation](https://github.com/OpenCppCoverage/OpenCppCoverage/wiki) 
 for details on how to use and integrate in CI etc.
+
+## License
+This project is released under the MIT license, see License. This basically means you can do whatever you want with this project as long as you provide the original license and copyright information with your own project distribution.
