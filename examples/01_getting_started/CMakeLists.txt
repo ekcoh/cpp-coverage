@@ -1,4 +1,4 @@
-# Library (software under test)
+# Library (software under test) part of cpp_coverage project
 add_library(cpp_coverage_sortlib 
     "src/utils.hpp"
     "src/utils.cpp"
@@ -18,12 +18,13 @@ cpp_coverage_add_test_coverage(
         cpp_coverage_example_01_getting_started_test 
     TARGET_ARGS
         --gtest_output=xml:cpp_coverage_example_01_getting_started_test.output.xml 
-        > cpp_coverage_example_01_getting_started_test.output.txt
+    MODULES
+        ${CMAKE_BINARY_DIR}
     SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/src" 
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
     CONTINUE_AFTER_CPP_EXCEPTION
+    REPORT_FOR_GLOBAL
     REPORT_FOR_PROJECT
     REPORT_FOR_TARGET
-    QUIET
 )
