@@ -9,6 +9,7 @@ add_definitions(-DCPP_COVERAGE_EXAMPLE_STATIC_LIB)
 
 # TODO Fix problem where coverage is not provided for bubblesort when aggregating... should extract sources via dependencies?!
 # First test binary (For the sake of example we are adding two separate test binaries covering different parts...)
+# But note that these test binaries belong to the same project.
 add_executable(cpp_coverage_example_02_multiple_targets_test1 
     "test/extended_sortlib_test.cpp"
 )
@@ -19,6 +20,7 @@ add_definitions(-DCPP_COVERAGE_EXAMPLE_STATIC_LIB)
 #add_test(NAME cpp_coverage_example_02_multiple_targets_test1 COMMAND cpp_coverage_example_02_multiple_targets_test1 )
 
 # Second test binary (For the sake of example we are adding two separate test binaries covering different parts...)
+# But note that these test binaries belong to the same project.
 add_executable(cpp_coverage_example_02_multiple_targets_test2 
     "src/mergesort.cpp"
     "test/mergesort_test.cpp"

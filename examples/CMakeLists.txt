@@ -13,5 +13,6 @@ if(NOT googletest)
     add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
 endif()
 
+# Include sample directories
 add_subdirectory(01_getting_started)
 add_subdirectory(02_multiple_targets)
