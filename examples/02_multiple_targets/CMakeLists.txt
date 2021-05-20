@@ -15,7 +15,7 @@ add_executable(cpp_coverage_example_02_multiple_targets_test1 "test/extended_sor
 target_link_libraries(cpp_coverage_example_02_multiple_targets_test1 PRIVATE cpp_coverage_extended_sortlib
 )
 add_definitions(-DCPP_COVERAGE_EXAMPLE_STATIC_LIB)
-cpp_coverage_add_test_coverage(
+cpp_coverage_add_test(
     TARGET
         cpp_coverage_example_02_multiple_targets_test1 
     MODULES
@@ -39,7 +39,7 @@ add_executable(cpp_coverage_example_02_multiple_targets_test2
 target_include_directories(cpp_coverage_example_02_multiple_targets_test2 PRIVATE "src")
 target_link_libraries(cpp_coverage_example_02_multiple_targets_test2 PRIVATE cpp_coverage_extended_sortlib)
 add_definitions(-DCPP_COVERAGE_EXAMPLE_STATIC_LIB)
-cpp_coverage_add_test_coverage(
+cpp_coverage_add_test(
     TARGET
          cpp_coverage_example_02_multiple_targets_test2 
     MODULES

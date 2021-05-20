@@ -13,7 +13,7 @@ target_link_libraries(cpp_coverage_example_03_sub_project_test PRIVATE cpp_cover
 add_definitions(-DCPP_COVERAGE_EXAMPLE_STATIC_LIB)
 
 # Add test with coverage if coverage is enabled
-cpp_coverage_add_test_coverage(
+cpp_coverage_add_test(
     TARGET
         cpp_coverage_example_03_sub_project_test 
     TARGET_ARGS

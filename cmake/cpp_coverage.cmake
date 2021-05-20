@@ -6,10 +6,7 @@
 # See https://github.com/ekcoh/cpp-coverage for updates, documentation, and revision 
 # history.
 
-function(cpp_coverage_add_test_with_coverage)
-endfunction()
-
-# cpp_coverage_add_code_coverage
+# cpp_coverage_add_test
 #
 # Adds code coverage target(s) for a given test target using OpenCppCoverage for
 # coverage measurements. This is a substitute for regular CMake add_test(...).
@@ -64,7 +61,7 @@ endfunction()
 # QUIET
 #   See https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/Command-line-reference
 #
-function(cpp_coverage_add_test_coverage)
+function(cpp_coverage_add_test)
     cmake_parse_arguments(
 		CPP_COVERAGE
 		"REPORT_FOR_TARGET;REPORT_FOR_PROJECT;REPORT_FOR_GLOBAL;CONTINUE_AFTER_CPP_EXCEPTION;COVER_CHILDREN;VERBOSE;QUIET;NO_AGGREGATE_BY_FILE"
