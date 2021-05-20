@@ -16,3 +16,4 @@ endif()
 # Include sample directories
 add_subdirectory(01_getting_started)
 add_subdirectory(02_multiple_targets)
+add_subdirectory(03_sub_project)
