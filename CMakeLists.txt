@@ -31,7 +31,7 @@ if (CPP_COVERAGE_ENABLE_REPORT_GENERATOR)
     FetchContent_GetProperties(report_generator)
     if(NOT report_generator)
         FetchContent_Populate(report_generator)
-        set(CPP_COVERAGE_REPORT_GENERATOR_TOOL "${report_generator_SOURCE_DIR}/net47/ReportGenerator.exe")
+        set(CPP_COVERAGE_REPORT_GENERATOR_TOOL "${report_generator_SOURCE_DIR}/net47/ReportGenerator.exe" CACHE STRING "Report generator tool path")
     endif()
 endif()
 
