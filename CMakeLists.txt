@@ -11,23 +11,22 @@ cmake_minimum_required (VERSION 3.11)
 include(cmake/cpp_coverage.cmake)
 
 project(cpp_coverage)
-option(CPP_COVERAGE_BUILD_EXAMPLES "If enabled, builds examples" ON) # TODO Default ON
+
+option(CPP_COVERAGE_BUILD_EXAMPLES "If enabled, builds examples" OFF)
 option(CPP_COVERAGE_ENABLE_PER_TARGET_COVERAGE_REPORTS "If enabled, allows generation of per-target coverage report (if defined for target)" OFF)
+option(CPP_COVERAGE_ENABLE_REPORT_GENERATOR "If enabed, downloads ReportGenerator (if not already available as fetched content) and enables custom report generation." ON)
 
-if (WIN32)
-    option(CPP_COVERAGE_ENABLE_REPORT_GENERATOR "If enabed, downloads ReportGenerator (if not already available as fetched content) and enables custom report generation." ON)
-    if (CPP_COVERAGE_ENABLE_REPORT_GENERATOR)
-        include(FetchContent)
-        FetchContent_Declare(
-            report_generator
-            URL https://github.com/danielpalme/ReportGenerator/releases/download/v4.8.8/ReportGenerator_4.8.8.zip
-        )
+if (CPP_COVERAGE_ENABLE_REPORT_GENERATOR)
+    include(FetchContent)
+    FetchContent_Declare(
+        report_generator
+        URL https://github.com/danielpalme/ReportGenerator/releases/download/v4.8.8/ReportGenerator_4.8.8.zip
+    )
 
-        FetchContent_GetProperties(report_generator)
-        if(NOT report_generator)
-            FetchContent_Populate(report_generator)
-            set(CPP_COVERAGE_REPORT_GENERATOR_TOOL "${report_generator_SOURCE_DIR}/net47/ReportGenerator.exe")
-        endif()
+    FetchContent_GetProperties(report_generator)
+    if(NOT report_generator)
+        FetchContent_Populate(report_generator)
+        set(CPP_COVERAGE_REPORT_GENERATOR_TOOL "${report_generator_SOURCE_DIR}/net47/ReportGenerator.exe")
     endif()
 endif()
 

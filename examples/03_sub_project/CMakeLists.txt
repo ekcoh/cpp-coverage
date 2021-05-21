@@ -13,17 +13,18 @@ target_link_libraries(cpp_coverage_example_03_sub_project_test PRIVATE cpp_cover
 add_definitions(-DCPP_COVERAGE_EXAMPLE_STATIC_LIB)
 
 # Add test with coverage if coverage is enabled
-cpp_coverage_add_test_coverage(
+cpp_coverage_add_test(
     TARGET
         cpp_coverage_example_03_sub_project_test 
     TARGET_ARGS
-        --gtest_output=xml:cpp_coverage_example_03_sub_project_test.output.xml 
-        > cpp_coverage_example_03_sub_project_test.output.txt
+        --gtest_output=xml:cpp_coverage_example_03_sub_project_test.output.xml
+    MODULES
+        ${CMAKE_BINARY_DIR}
     SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/src" 
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
     CONTINUE_AFTER_CPP_EXCEPTION
+    REPORT_FOR_GLOBAL
     REPORT_FOR_PROJECT
     REPORT_FOR_TARGET
-    QUIET
 )
