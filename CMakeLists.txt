@@ -11,7 +11,7 @@ cmake_minimum_required (VERSION 3.11)
 include(cmake/cpp_coverage.cmake)
 
 project(cpp_coverage)
-option(CPP_COVERAGE_BUILD_EXAMPLES "If enabled, builds examples" ON) # TODO Default ON
+option(CPP_COVERAGE_BUILD_EXAMPLES "If enabled, builds examples" OFF)
 option(CPP_COVERAGE_ENABLE_PER_TARGET_COVERAGE_REPORTS "If enabled, allows generation of per-target coverage report (if defined for target)" OFF)
 
 if (WIN32)
