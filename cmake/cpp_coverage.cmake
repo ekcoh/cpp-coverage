@@ -147,26 +147,31 @@ function(cpp_coverage_add_test)
         "export_type=html:${CPP_COVERAGE_NATIVE_HTML_OUTPUT_DIR}\n"
         "${OPENCPPCOVERAGE_COVERAGE_ARGS_MULTILINE}"
 	)
-
+    
     # Add custom command to generate coverage file (.cov) file (by running test)
-    # in case the cov file is missing or outdated
-    add_custom_command(
-		OUTPUT ${CPP_COVERAGE_BINARY_OUTPUT_FILE}
-        COMMENT
-            "Running OpenCppCoverage on test target ${CPP_COVERAGE_TARGET} to collect test coverage..."
-		COMMAND OpenCppCoverage 
-			${OPENCPPCOVERAGE_CLI_ARGS} 
-            --config_file=${CPP_COVERAGE_CONFIG_INPUT_FILE} 
-			-- $<TARGET_FILE:${CPP_COVERAGE_TARGET}> ${CPP_COVERAGE_TARGET_ARGS}
-		DEPENDS
-			${CPP_COVERAGE_TARGET}         # depends on test binary
-            ${CPP_COVERAGE_DEPENDENCIES}   # optional extra dependencies
-		WORKING_DIRECTORY 
-            ${CMAKE_CURRENT_BINARY_DIR}    # use test binary directory as current directory
-		VERBATIM
-	)
+    # in case the cov file is missing or outdated. This is disabled by default since
+    # unexpected test runs triggered by build system rules might not be desirable
+    # if tests are slow or have side effects, e.g. UI-tests.
+    if (CPP_COVERAGE_ENABLE_COV_COMMANDS)
+        add_custom_command(
+	        OUTPUT ${CPP_COVERAGE_BINARY_OUTPUT_FILE}
+            COMMENT
+                "Running OpenCppCoverage on test target ${CPP_COVERAGE_TARGET} to collect test coverage..."
+	        COMMAND OpenCppCoverage 
+		        ${OPENCPPCOVERAGE_CLI_ARGS} 
+                --config_file=${CPP_COVERAGE_CONFIG_INPUT_FILE} 
+		        -- $<TARGET_FILE:${CPP_COVERAGE_TARGET}> ${CPP_COVERAGE_TARGET_ARGS}
+	        DEPENDS
+		        ${CPP_COVERAGE_TARGET}         # depends on test binary
+                ${CPP_COVERAGE_DEPENDENCIES}   # optional extra dependencies
+	        WORKING_DIRECTORY 
+                ${CMAKE_CURRENT_BINARY_DIR}    # use test binary directory as current directory
+	        VERBATIM
+        )
+    endif()
 
-    # Register test inary with CTest and wrap with OpenCppCoverage to generate .cov file
+    # Register test binary with CTest and wrap with OpenCppCoverage to generate .cov file
+    # when the test is executed
     add_test(
         NAME 
             ${CPP_COVERAGE_TARGET} 
@@ -214,12 +219,14 @@ function(cpp_coverage_add_test)
 	    )
 
         # Make report target depend on target generating coverage
-        add_dependencies(${PROJECT_COVERAGE_REPORT_TARGET} ${CPP_COVERAGE_TARGET}_coverage)
+        if (CPP_COVERAGE_ENABLE_COV_DEPENDENCIES)
+            add_dependencies(${PROJECT_COVERAGE_REPORT_TARGET} ${CPP_COVERAGE_TARGET}_coverage)
+        endif()
     endif()
 
     # Coverage report for top-level cmake project (first)
     if (CPP_COVERAGE_REPORT_FOR_GLOBAL)
-        set(GLOBAL_COVERAGE_REPORT_TARGET cpp_coverage_global_coverage_report)
+        set(GLOBAL_COVERAGE_REPORT_TARGET coverage_report)
         if (NOT TARGET ${GLOBAL_COVERAGE_REPORT_TARGET})
             cpp_coverage_add_coverage_report_target(
                 "${GLOBAL_COVERAGE_REPORT_TARGET}"   # TARGET_NAME
@@ -235,7 +242,9 @@ function(cpp_coverage_add_test)
 	    )
 
         # Make report target depend on target generating coverage
-        add_dependencies(${GLOBAL_COVERAGE_REPORT_TARGET} ${CPP_COVERAGE_TARGET}_coverage)        
+        if (CPP_COVERAGE_ENABLE_COV_DEPENDENCIES)
+            add_dependencies(${GLOBAL_COVERAGE_REPORT_TARGET} ${CPP_COVERAGE_TARGET}_coverage)
+        endif()
     endif()
 endfunction()
 
@@ -258,36 +267,26 @@ function(cpp_coverage_add_coverage_report_target
 
     set(REPORT_ARTIFACTS "")
     list(APPEND REPORT_ARTIFACTS ${HTML_REPORT})
-
-    # Add a utility target for generating report
-	add_custom_target(${REPORT_TARGET}
-		DEPENDS ${REPORT_ARTIFACTS}
-		VERBATIM
-    )
     
     string(APPEND REPORT_ARGS_MULTILINE "# Auto-generated config file for OpenCppCoverage to produce coverage report\n")
     string(APPEND REPORT_ARGS_MULTILINE "export_type=html:${NATIVE_HTML_REPORT_DIR}\n")
     string(APPEND REPORT_ARGS_MULTILINE "export_type=cobertura:${NATIVE_REPORT_COBERTURA_FILE}\n")
     
-    add_custom_command(OUTPUT ${HTML_REPORT}
-        COMMAND OpenCppCoverage ${OPENCPPCOVERAGE_CLI_ARGS} --config_file ${REPORT_CONFIG_FILE}
-        COMMAND ${CPP_COVERAGE_REPORT_GENERATOR_TOOL} 
-        -reports:${NATIVE_REPORT_COBERTURA_FILE} 
-        -reporttypes:Html;HtmlChart;Badges 
-        -targetdir:${TARGET_BINARY_DIR}/report 
-        -historydir:${TARGET_BINARY_DIR}/history
-	    DEPENDS 
-            ${REPORT_CONFIG_FILE} 
-            ${CPP_COVERAGE_BINARY_OUTPUT_FILE}
-	    COMMENT "Running OpenCppCoverage to generate code coverage report for \"${REPORT_TARGET}\" in \"${REPORT}\""
-	    VERBATIM
-    )
-
     # Note that file(GENERATE) will not generate until all CMakeLists.txt have been processed
     # We utilize this property of that command to make it possible to utilize aggregated
-    # property set of input coverage files.
+    # property set of input coverage files to be written into report config file.
     file(GENERATE 
 	    OUTPUT ${REPORT_CONFIG_FILE}
 	    CONTENT "${REPORT_ARGS_MULTILINE}$<TARGET_PROPERTY:${REPORT_TARGET},CPP_COVERAGE_INPUT_FILES>"
 	)
+    
+    add_custom_target(${REPORT_TARGET}
+        COMMAND OpenCppCoverage ${OPENCPPCOVERAGE_CLI_ARGS} --config_file ${REPORT_CONFIG_FILE}
+		COMMAND ${CPP_COVERAGE_REPORT_GENERATOR_TOOL} 
+        -reports:${NATIVE_REPORT_COBERTURA_FILE} 
+        -reporttypes:${CPP_COVERAGE_REPORT_TYPE} 
+        -targetdir:${TARGET_BINARY_DIR}/report 
+        -historydir:${TARGET_BINARY_DIR}/history
+		VERBATIM
+    )
 endfunction()
