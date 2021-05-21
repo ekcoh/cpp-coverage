@@ -255,7 +255,6 @@ function(cpp_coverage_add_coverage_report_target
 
     file(TO_NATIVE_PATH ${REPORT_COBERTURA_FILE} NATIVE_REPORT_COBERTURA_FILE)
     file(TO_NATIVE_PATH ${HTML_REPORT_DIR} NATIVE_HTML_REPORT_DIR)
-    #file(TO_NATIVE_PATH ${REPORT_DIR} NATIVE_REPORT_DIR)
 
     set(REPORT_ARTIFACTS "")
     list(APPEND REPORT_ARTIFACTS ${HTML_REPORT})
@@ -269,16 +268,7 @@ function(cpp_coverage_add_coverage_report_target
     string(APPEND REPORT_ARGS_MULTILINE "# Auto-generated config file for OpenCppCoverage to produce coverage report\n")
     string(APPEND REPORT_ARGS_MULTILINE "export_type=html:${NATIVE_HTML_REPORT_DIR}\n")
     string(APPEND REPORT_ARGS_MULTILINE "export_type=cobertura:${NATIVE_REPORT_COBERTURA_FILE}\n")
-
-    #add_custom_command(OUTPUT ${NATIVE_REPORT_COBERTURA_FILE}
-    #    COMMAND OpenCppCoverage ${OPENCPPCOVERAGE_CLI_ARGS} --config_file ${REPORT_CONFIG_FILE}
-	#    DEPENDS 
-    #        ${REPORT_CONFIG_FILE} 
-    #        ${CPP_COVERAGE_BINARY_OUTPUT_FILE} # depends on cov file of current target (actually all of them)
-	#    COMMENT "Running OpenCppCoverage to generate code coverage report for \"${REPORT_TARGET}\" in \"${REPORT}\""
-	#    VERBATIM
-    #)
-
+    
     add_custom_command(OUTPUT ${HTML_REPORT}
         COMMAND OpenCppCoverage ${OPENCPPCOVERAGE_CLI_ARGS} --config_file ${REPORT_CONFIG_FILE}
         COMMAND ${CPP_COVERAGE_REPORT_GENERATOR_TOOL} 
@@ -289,7 +279,6 @@ function(cpp_coverage_add_coverage_report_target
 	    DEPENDS 
             ${REPORT_CONFIG_FILE} 
             ${CPP_COVERAGE_BINARY_OUTPUT_FILE}
-	    #WORKING_DIRECTORY ${REPORT_DIR}
 	    COMMENT "Running OpenCppCoverage to generate code coverage report for \"${REPORT_TARGET}\" in \"${REPORT}\""
 	    VERBATIM
     )
