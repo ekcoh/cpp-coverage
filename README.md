@@ -20,7 +20,7 @@ options exist to for example generate reports per test target or aggregate a glo
 See documentation of CMake functions in [cmake/cpp_coverage.cmake](cmake/cpp_coverage.cmake) 
 for a complete list of supported options.
 
-See documentation of (ReportGenerator)[https://github.com/danielpalme/ReportGenerator] for
+See documentation of [ReportGenerator](https://github.com/danielpalme/ReportGenerator) for
 documentation on how to customize coverage reports outside what is supported by OpenCppCoverage.
 ReportGenerator is activated by setting `CPP_COVERAGE_ENABLE_REPORT_GENERATOR` to `ON`.
 
@@ -43,6 +43,6 @@ This project is released under the MIT license, see [LICENSE](LICENSE). This bas
 you can do whatever you want with this project as long as you provide the original 
 license and copyright information with your own project distribution.
 
-Note that utilized dependencies such as OpenCppCoverage, Google Test and
-ReportGenerator are subject of their respective licenses and are not distributed 
-as part of this software.
+Note that utilized dependencies such as [OpenCppCoverage](https://github.com/OpenCppCoverage/OpenCppCoverage), 
+[Google Test](https://github.com/google/googletest) and [ReportGenerator](https://github.com/danielpalme/ReportGenerator) 
+are subject of their respective licenses and termas and are not distributed as part of this software.
