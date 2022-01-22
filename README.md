@@ -45,4 +45,4 @@ license and copyright information with your own project distribution.
 
 Note that utilized dependencies such as [OpenCppCoverage](https://github.com/OpenCppCoverage/OpenCppCoverage), 
 [Google Test](https://github.com/google/googletest) and [ReportGenerator](https://github.com/danielpalme/ReportGenerator) 
-are subject of their respective licenses and termas and are not distributed as part of this software.
+are subject of their respective licenses and terms and are not distributed as part of this software.
